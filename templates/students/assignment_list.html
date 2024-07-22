@@ -14,18 +14,35 @@
                 </tr>
             </thead>
             <tbody>
-                {% for assign, remarks in assignments %}
+                {% for remark in remarks %}
+                    {{ remark }}
+                {% empty %}
+                    I'm empty
+                {% endfor %}
+                {% for assign in assignments %}
                 <tr>
                     {% if assign.submission_date < timen %}
                         <td class="align-middle"><del><a href="{% url 'students:take_assignment' assign.pk %}">{{ assign.name }}</a></del></td>
                         <td class="align-middle"><del>{{ assign.subject }}</del></td>
                         <td class="align-middle"><del>{{ assign.submission_date }}</del></td>
-                        <td class="align-middle">{{ remarks.Remarks }}</td>
+                        {% for remark in remarks %}
+                            {% if remark.studentanswer.assignment_id == assignment.id %}
+                                <td>{{ remark.remark }}</td>
+                            {% endif %}
+                        {% empty %}
+                            <td>No remarks provided.</td>
+                        {% endfor %}
                     {% else %}
                         <td class="align-middle"><a href="{% url 'students:take_assignment' assign.pk %}">{{ assign.name }}</a></td>
                         <td class="align-middle">{{ assign.subject }}</td>
                         <td class="align-middle">{{ assign.submission_date }}</td>
-                        <td class="align-middle">{{ remarks.Remarks }}</td>
+                        {% for remark in remarks %}
+                            {% if remark.studentanswer.assignment_id == assignment.id %}
+                                <td>{{ remark.remark }}</td>
+                            {% endif %}
+                        {% empty %}
+                            <td>No remarks provided.</td>
+                        {% endfor %}
                     {% endif %}
                 </tr>
                 {% empty %}

@@ -282,19 +282,19 @@ class StudentAssignmentListView(ListView):
 
     def get_context_data(self, **kwargs):
         kwargs['timen'] = date.today()
-        # kwargs['remarks'] = AnswerRemark.objects.filter(studentanswer__assignment_id__in = [1,2], studentanswer__student_id = self.request.user.id)
+        kwargs['remarks'] = AnswerRemark.objects.filter(studentanswer__assignment_id__in = [1,2], studentanswer__student_id = self.request.user.id)
         return super().get_context_data(**kwargs)
 
     # def remark_answer(self):
     #     return AnswerRemark.objects.filter(studentanswer__assignment_id = 1, studentanswer__student_id = 3)
 
     def get_queryset(self):
-        student = self.request.user.student
         student_semester = Student.objects.filter(pk = self.request.user.student.pk).values_list('semester', flat=True)
         student_subs = Subject.objects.filter(semester__in = student_semester).values_list('pk', flat=True)
         assign = Assignment.objects.filter(subject__in = student_subs).order_by('-submission_date')
-        remarks = AnswerRemark.objects.filter(studentanswer__assignment_id__in = [1,2], studentanswer__student_id = self.request.user.id)
-        queryset = zip(assign, remarks)
+        assign_ids = assign.values_list('pk', flat=True)
+        remarks = AnswerRemark.objects.filter(studentanswer__assignment_id__in = assign_ids, studentanswer__student_id = self.request.user.id)
+        queryset = assign
         return queryset
 
 
