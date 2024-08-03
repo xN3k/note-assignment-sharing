@@ -13,15 +13,7 @@ class StudentSignUpForm(UserCreationForm):
         model = User
         fields = ('username','roll_no','semester','email','password1', 'password2',)
 
-    # @transaction.atomic
-    # def save(self):
-    #     user = super().save(commit=False)
-    #     user.is_student = True
-    #     user.save()
-    #     student = Student.objects.create(user=user)
-    #     student.roll_no.add(*self.cleaned_data.get('roll_no'))
-    #     student.semester.add(*self.cleaned_data.get('semester'))
-    #     return user
+
 
 
 class TeacherSignUpForm(UserCreationForm):

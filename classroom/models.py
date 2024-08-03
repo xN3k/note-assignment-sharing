@@ -48,12 +48,6 @@ class Student(models.Model):
         return self.user.username
 
 
-# @receiver(post_save, sender=User)
-# def update_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Student.objects.create(user=instance)
-#     instance.student.save()
-
 
 @receiver(post_save, sender=User)
 def update_user_profile(sender, instance, created, **kwargs):

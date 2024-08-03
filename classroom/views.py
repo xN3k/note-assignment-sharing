@@ -31,20 +31,7 @@ def home(request):
 
 def admin_check(user):
     return user.is_superuser
-
-# class StudentSignUpView(CreateView):
-#     model = User
-#     form_class = StudentSignUpForm
-#     template_name = 'signup_form.html'
-
-#     def get_context_data(self, **kwargs):
-#         kwargs['user_type'] = 'student'
-#         return super().get_context_data(**kwargs)
-
-#     def form_valid(self, form):
-#         user = form.save()
-#         login(self.request, user)
-#         return redirect('home')
+ 
 
 
 
@@ -90,18 +77,6 @@ class AssignmentCreateView(CreateView):
         assignment = form.save(commit=False)
         assignment.owner = self.request.user
         assignment.save()
-        # custom_subject = 'New Assignment: ' + form.cleaned_data.get('name')
-        # custom_message = 'This assignment must be submitted before ' + form.cleaned_data.get('submission_date').strftime("%Y/%m/%d")
-        # a_semester = Subject.objects.filter(name = form.cleaned_data.get('subject')).annotate(as_int=Cast('semester', IntegerField())).get()
-        # receiver = []
-        # for studentemail in Student.objects.filter(semester=a_semester.as_int).values_list('user__email', flat=True):
-        #     receiver.append(studentemail)
-        # send_mail(
-        #     custom_subject,
-        #     custom_message,
-        #     'chaudharyk456@gmail.com',
-        #     receiver
-        # )
         messages.success(self.request, 'The assignment was created! Add some questions to it.')
         return redirect('teachers:assignment_change', assignment.pk)
 
@@ -285,8 +260,6 @@ class StudentAssignmentListView(ListView):
         kwargs['remarks'] = AnswerRemark.objects.filter(studentanswer__assignment_id__in = [1,2], studentanswer__student_id = self.request.user.id)
         return super().get_context_data(**kwargs)
 
-    # def remark_answer(self):
-    #     return AnswerRemark.objects.filter(studentanswer__assignment_id = 1, studentanswer__student_id = 3)
 
     def get_queryset(self):
         student_semester = Student.objects.filter(pk = self.request.user.student.pk).values_list('semester', flat=True)

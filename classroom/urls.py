@@ -101,6 +101,6 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
-admin.site.site_header = "Notes Assignment Sharing Administration"
-admin.site.site_title = "NAS Admin Login"
-admin.site.index_title = "Welcome to Notes Assignment Sharing Portal"
+admin.site.site_header = "Online Assignment Submission"
+admin.site.site_title = "OAS Admin Login"
+admin.site.index_title = "Welcome to Online Assignment Submission Portal"
