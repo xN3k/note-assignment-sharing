@@ -14,15 +14,10 @@
                 </tr>
             </thead>
             <tbody>
-                {% for remark in remarks %}
-                    {{ remark }}
-                {% empty %}
-                    I'm empty
-                {% endfor %}
                 {% for assign in assignments %}
                 <tr>
                     {% if assign.submission_date < timen %}
-                        <td class="align-middle"><del><a href="{% url 'students:take_assignment' assign.pk %}">{{ assign.name }}</a></del></td>
+                        <td class="align-middle"><del>{{ assign.name }}</del></td>
                         <td class="align-middle"><del>{{ assign.subject }}</del></td>
                         <td class="align-middle"><del>{{ assign.submission_date }}</del></td>
                         {% for remark in remarks %}

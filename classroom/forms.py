@@ -18,10 +18,11 @@ class StudentSignUpForm(UserCreationForm):
 
 class TeacherSignUpForm(UserCreationForm):
     email = forms.EmailField()
+    semester = forms.IntegerField(required = True)
     
     class Meta:
         model = User
-        fields = ('username','email','password1', 'password2',)
+        fields = ('username','email', 'semester', 'password1', 'password2',)
 
 
 class QuestionForm(forms.ModelForm):
@@ -49,7 +50,12 @@ class StudentAnswerForm(forms.ModelForm):
 
 class StudentAnswerImageForm(forms.ModelForm):
     answer_image = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    answer_file = forms.FileField(
+    widget=forms.ClearableFileInput(attrs={
+        'multiple': True,
+        'accept': 'application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    }))
 
     class Meta:
         model = StudentAnswerImage
-        fields = ('answer_image',)
+        fields = ('answer_image','answer_file',)

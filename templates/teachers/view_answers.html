@@ -6,7 +6,12 @@
 {% block content %}
     <br>
     {% for qq in answered_image %}
-        <a href="/media/{{ qq.answer_image }}" download><img src="/media/{{ qq.answer_image }}" class="img-responsive" style="width:32%; height:60%;"/></a>
+        {% if qq.answer_image %}
+            <a href="/media/{{ qq.answer_image }}" download><img src="/media/{{ qq.answer_image }}" class="img-responsive" style="width:32%; height:60%;"/></a>
+        {% endif %}
+        {% if qq.answer_file %}
+            <a href="/media/{{ qq.answer_file }}" download>{{ qq.filename }}</a>
+        {% endif %}
     {% empty %}
 
     {% endfor %}

@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
@@ -39,6 +41,14 @@ class Question(models.Model):
     def __str__(self):
         return self.text
 
+
+class Teacher(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    semester = models.PositiveBigIntegerField(null=True)
+
+    def __str__(self):
+        return f"Teacher - {self.user.username} - {self.semester}"
+
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key = True)
     roll_no = models.PositiveIntegerField(unique=True, null=True)
@@ -62,6 +72,9 @@ class StudentAnswer(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     text = models.CharField(max_length=255, null=True)
 
+    def __str__(self):
+        return f"{self.student} - {self.assignment} - {self.text}"
+
 
 class AnswerRemark(models.Model):
     Remarks = models.TextField('Remarks', default="No remarks added!", null=True)
@@ -75,3 +88,12 @@ class AnswerRemark(models.Model):
 class StudentAnswerImage(models.Model):
     studentanswer = models.ForeignKey(StudentAnswer, on_delete=models.CASCADE)
     answer_image = models.ImageField(upload_to='media/', verbose_name='Answer Image', blank=True)
+    answer_file = models.FileField(upload_to="media/", null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.studentanswer.student} - {self.studentanswer.assignment}"
+    
+    def filename(self):
+        if self.answer_file:
+            return os.path.basename(self.answer_file.name)
+        return "baby see mai hu south delhi ke"

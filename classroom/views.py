@@ -18,7 +18,7 @@ from django.core.mail import send_mail
 from django.forms import modelformset_factory
 
 from .decorators import *
-from .models import User, Assignment, Question, Subject, Student, StudentAnswer, StudentAnswerImage, AnswerRemark
+from .models import User, Assignment, Question, Subject, Student, StudentAnswer, StudentAnswerImage, AnswerRemark, Teacher
 from .forms import StudentSignUpForm, TeacherSignUpForm, QuestionForm, StudentAnswerForm, StudentAnswerImageForm, AnswerRemarkForm
 
 def home(request):
@@ -47,6 +47,13 @@ def teachersignup(request):
             user.is_teacher = True
             user.email = form.cleaned_data.get('email')
             user.save()
+            semester = form.cleaned_data.get('semester')
+
+            # TO-DO handle it in better way
+            try:
+                Teacher.objects.create(user=user, semester=semester)
+            except:
+                print("Teacher not created")
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             return redirect('admin:index')
@@ -72,6 +79,13 @@ class AssignmentCreateView(CreateView):
     model = Assignment
     fields = ('name', 'subject','submission_date',)
     template_name = 'teachers/assignment_add_form.html'
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        teacher = Teacher.objects.get(user=self.request.user)
+        if teacher:
+            form.fields['subject'].queryset = Subject.objects.filter(semester=teacher.semester)
+        return form
 
     def form_valid(self, form):
         assignment = form.save(commit=False)
@@ -293,6 +307,7 @@ def submit_answer(request, pk):
         form = StudentAnswerForm(request.POST)
         file_form = StudentAnswerImageForm(request.POST, request.FILES)
         files = request.FILES.getlist('answer_image')
+        docs = request.FILES.getlist('answer_file')
         if form.is_valid() and file_form.is_valid():
             student_answer = form.save(commit=False)
             student_answer.student = user
@@ -300,6 +315,9 @@ def submit_answer(request, pk):
             student_answer.save()
             for f in files:
                 file_instance = StudentAnswerImage(answer_image = f, studentanswer = student_answer)
+                file_instance.save()
+            for f in docs:
+                file_instance = StudentAnswerImage(answer_file = f, studentanswer = student_answer)
                 file_instance.save()
             messages.success(request,"Answers have been submitted!")
             return redirect("students:assignment_list")
